@@ -12,7 +12,7 @@ class MessageHttpAPI extends Marty.HttpStateSource {
   createMessage(message) {
     return this.post({
       body: _.omit(message, 'cid'),
-      url: format(`/api/rooms/${message.roomId}/messages`)
+      url: `/api/rooms/${message.roomId}/messages`
     });
   }
 }

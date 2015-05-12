@@ -1,51 +1,93 @@
-// var _ = require('lodash');
-// var React = require('react');
-// var Marty = require('marty-native');
-// var NewMessage = require('./newMessage');
-// var RoomsStore = require('../stores/roomsStore');
-// var MessagesStore = require('../stores/messagesStore');
+var _ = require('lodash');
+var React = require('react-native');
+var Marty = require('marty-native');
+var RoomsStore = require('../stores/roomsStore');
+var MessagesStore = require('../stores/messagesStore');
 
-// class Room extends React.Component {
-//   render() {
-//     var room = this.props.room;
-//     var messages = _.sortBy(this.props.messages, message => new Date(message.timestamp));
+var {
+  Component,
+  ScrollView,
+  View,
+  Text,
+  TextInput
+} = React;
 
-//     return (
-//       <div className='room'>
-//         <div className='room-body'>
-//           <h1 className='room-name'>{room.name}</h1>
-//           <ul className='messages'>
-//             {_.map(messages, (message) => {
-//               return (
-//                 <li className='message'>
-//                   <div className='message-text'>
-//                     {message.text}
-//                   </div>
-//                 </li>
-//               );
-//             })}
-//           </ul>
-//           <NewMessage roomId={room.id} />
-//         </div>
-//       </div>
-//     );
-//   }
-// }
+var styles = {
+  messages: {
+  },
+  message: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCC'
+  },
+  newMessage: {
+    borderWidth: 0.5,
+    borderColor: '#0f0f0f',
+    flex: 1,
+    fontSize: 13,
+    height: 50,
+    padding: 4,
+    marginBottom: 4
+  }
+}
 
-// module.exports = Marty.createContainer(Room, {
-//   listenTo: ['roomsStore', 'messagesStore'],
-//   fetch: {
-//     room() {
-//       return this.app.roomsStore.getRoom(this.props.id)
-//     },
-//     messages() {
-//       return this.app.messagesStore.getMessagesForRoom(this.props.id)
-//     }
-//   },
-//   pending() {
-//     return <div className='loading'>Loading...</div>;
-//   },
-//   failed(errors) {
-//     return <div className='error'>Failed to load room. {errors}</div>;
-//   }
-// });
+class Room extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = { message: '' };
+    this.sendMessage = this.sendMessage.bind(this);
+  }
+  render() {
+    var room = this.props.room;
+    var messages = _.sortBy(this.props.messages, message => new Date(message.timestamp));
+
+    return (
+      <ScrollView style={styles.room}>
+        <View style={styles.messages}>
+          {messages.map(this.renderMessage)}
+        </View>
+        <TextInput
+          style={styles.newMessage}
+          value={this.state.message}
+          onSubmitEditing={this.sendMessage}
+          onChangeText={(text) => this.setState({message: text})} />
+      </ScrollView>
+    );
+  }
+  sendMessage() {
+    this.context.app.messageActionCreators.sendMessage(
+      this.state.message,
+      this.props.room.id
+    );
+    this.setState({
+      message: ''
+    });
+    return false;
+  }
+  renderMessage(message) {
+    return (
+      <View>
+        <Text style={styles.message}>
+          {message.text}
+        </Text>
+      </View>
+    );
+  }
+}
+
+Room.contextTypes = Marty.contextTypes;
+
+module.exports = Marty.createContainer(Room, {
+  listenTo: ['roomsStore', 'messagesStore'],
+  fetch: {
+    room() {
+      return this.app.roomsStore.getRoom(this.props.data.id)
+    },
+    messages() {
+      return this.app.messagesStore.getMessagesForRoom(this.props.data.id)
+    }
+  },
+  failed(errors) {
+    return <View><Text>Failed to load room</Text></View>;
+  }
+});

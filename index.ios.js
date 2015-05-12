@@ -5,9 +5,9 @@
 'use strict';
 
 var Application = require('./app');
-var Home = require('./app/components/home');
+var Root = require('./app/components/root');
 var AppRegistry = require('react-native').AppRegistry;
 
 var app = new Application();
 
-AppRegistry.registerComponent('MartyNativeChatExample', () => app.bindTo(Home));
+AppRegistry.registerComponent('MartyNativeChatExample', () => app.bindTo(Root));

@@ -9,6 +9,7 @@
     "lodash": "^3.8.0",
     "marty-native": "^0.10.0-beta",
     "react-native": "^0.4.1",
+    "react-native-router": "^0.1.3",
     "uuid": "^2.0.1"
   }
 }
