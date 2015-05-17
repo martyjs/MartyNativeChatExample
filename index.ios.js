@@ -1,12 +1,9 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
-'use strict';
-
 var Application = require('./app');
+var Marty = require('marty-native');
 var Root = require('./app/components/root');
 var AppRegistry = require('react-native').AppRegistry;
+
+require('marty-devtools-observer')(Marty);
 
 var app = new Application();
 
