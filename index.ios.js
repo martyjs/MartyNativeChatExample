@@ -8,8 +8,6 @@ var { ApplicationContainer } = Marty;
 
 require('marty-devtools-observer')(Marty);
 
-var app = new Application();
-
 var Main = React.createClass({
   getInitialState() {
     return {
